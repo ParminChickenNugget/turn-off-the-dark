@@ -1,11 +1,26 @@
 namespace SpriteKind {
     export const Monster = SpriteKind.create()
+    export const Data = SpriteKind.create()
 }
 // Set the tile map to show a dark room
 function setTilemap () {
     tiles.loadMap(tiles.createMap(tilemap`level`))
     tiles.setTilemap(tilemap`level_0`)
 }
+function makeDualityMonster (night: Image, day: Image) {
+let monster = sprites.create(night, SpriteKind.Monster)
+let darkSprite = sprites.create(night, SpriteKind.Data)
+let lightSprite = sprites.create(day, SpriteKind.Data)
+darkSprite.setFlag(SpriteFlag.Ghost, true)
+darkSprite.setFlag(SpriteFlag.Invisible, true)
+lightSprite.setFlag(SpriteFlag.Ghost, true)
+lightSprite.setFlag(SpriteFlag.Invisible, true)
+sprites.setDataSprite(monster, "night", darkSprite)
+sprites.setDataSprite(monster, "day", lightSprite)
+monster.setPosition(randint(50, 1500) randint,(0, 100))
+monster.follow(vivian, 15)
+}
+  
 // To redraw the tiles in different colors
 function redoTiles () {
     tileImages = [
@@ -27,7 +42,6 @@ function redoTiles () {
 }
 let copiedTile: Image = null
 let tileImages: Image[] = []
-let vivian = null
 let nightMonsterImgs = [img`
     . . . . . . . . . . . . . . . . 
     . . . 8 8 8 8 8 8 8 . . . . . . 
@@ -237,3 +251,7 @@ let vivianLightImg = img`
     . . . . . . f d d d f f 5 5 d . 
     `
 setTilemap()
+let vivian = sprites.create(vivianDarkImg, SpriteKind.Player)
+controller.moveSprite(vivian)
+scene.cameraFollowSprite(vivian)
+tiles.placeOnTile(vivian, tiles.getTileLocation(1, 5))
